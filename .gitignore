@@ -1,0 +1,96 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+venv
+
+# mypy
+.mypy_cache/
+
+# C extensions
+*.so
+
+# Typescript APP
+imswitch/app
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.build_temp
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+
+# Translations
+*.mo
+*.pot
+
+# Django
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# PyCharm
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Specific files
+imswitch/imcontrol/model/managers/lasers/KatanaLaserManager.py
+imswitch/imcontrol/model/managers/stands/LeicaDMIManager.py
+
+# Mac Files
+.DS_Store
+**/.DS_Store
+allfocusimages.npy
+allfocusvals.npy
+allfocuspositions.npy
+allfocusimages.tif
+llfocusimages.tif
+
+imswitch/ImSwitch/recordings*
+./ImSwitch/recordings
+locai/*
+conda/*
+conda-out/*
+imswitch/ImSwitch/ImSwitch/recordings/*
+imswitch/*.tif
+pip-wheel-metadata/ImSwitch-1.2.1.dist-info/entry_points.txt
+pip-wheel-metadata/ImSwitch-1.2.1.dist-info/LICENSE
+pip-wheel-metadata/ImSwitch-1.2.1.dist-info/METADATA
+pip-wheel-metadata/ImSwitch-1.2.1.dist-info/top_level.txt
+

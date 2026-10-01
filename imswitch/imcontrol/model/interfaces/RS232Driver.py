@@ -1,0 +1,116 @@
+from lantz.core.messagebased import MessageBasedDriver
+import lantz.core.messagebased as messagebased
+import pyvisa
+from pyvisa import constants
+
+class RS232Driver(MessageBasedDriver):
+    """General RS232 driver."""
+
+    def __init__(self, port, *args):
+        # print("RS232Driver diagnostic:")
+        # print("  messagebased.visa =", repr(messagebased.visa))
+        # print("  type =", type(messagebased.visa))
+        # print(
+        #     "  file =",
+        #     getattr(messagebased.visa, "__file__", None),
+        # )
+        if not hasattr(messagebased.visa, "ResourceManager"):
+            self._original_lantz_visa = messagebased.visa
+
+            print(
+                "[RS232Driver] Invalid Lantz VISA binding: "
+                f"{messagebased.visa!r}. Restoring pyvisa module."
+            )
+
+            messagebased.visa = pyvisa
+        super().__init__(port)
+
+    @classmethod
+    def getDefaults(cls, settings):
+
+        parity_map = {
+            "none": constants.Parity.none,
+            "odd": constants.Parity.odd,
+            "even": constants.Parity.even,
+            "mark": constants.Parity.mark,
+            "space": constants.Parity.space,
+        }
+
+        stop_bits_map = {
+            1: constants.StopBits.one,
+            1.5: constants.StopBits.one_and_a_half,
+            2: constants.StopBits.two,
+        }
+
+
+        try:
+            set_par = parity_map[settings["parity"].lower()]
+        except KeyError as exc:
+            raise ValueError(
+                f"Unsupported parity setting: {settings['parity']!r}"
+            ) from exc
+
+        try:
+            set_stopb = stop_bits_map[settings["stopbits"]]
+        except KeyError as exc:
+            raise ValueError(
+                f"Unsupported stop bits setting: {settings['stopbits']!r}"
+            ) from exc
+
+        defaults = {'ASRL': {'write_termination': settings["send_termination"],
+                             'read_termination': settings["recv_termination"],
+                             'baud_rate': settings["baudrate"],
+                             'bytesize': settings["bytesize"],
+                             'parity': set_par,
+                             'stop_bits': set_stopb,
+                             'encoding': settings["encoding"],
+                             }}
+        return defaults
+
+    def initialize(self):
+        super().initialize()
+        return 'initialized?'
+
+    def close(self):
+        self.finalize()
+
+
+def generateDriverClass(settings):
+    class GeneratedDriver(RS232Driver):
+        DEFAULTS = RS232Driver.getDefaults(settings)
+        try:
+            del DEFAULTS['ASRL']['bytesize']
+        except KeyError:
+            pass
+
+    return GeneratedDriver
+
+# settings = {'ASRL': {'write_termination': '\r',
+#                      'read_termination': '\r',
+#                      'baud_rate': 115200,
+#                      'bytesize': 8,
+#                      'parity': constants.Parity.none,
+#                      'stop_bits': constants.StopBits.one,
+#                      'encoding': 'ascii',
+#                      }}
+#
+# DriverClass = generateDriverClass(settings)
+# rs232port = DriverClass('TCPIP::localhost::5678::SOCKET')
+# rs232port.initialize()
+
+
+# Copyright (C) 2020-2023 ImSwitch developers
+# This file is part of ImSwitch.
+#
+# ImSwitch is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# ImSwitch is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
